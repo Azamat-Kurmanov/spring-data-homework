@@ -43,15 +43,30 @@ public class ProductController {
         productRepository.deleteById(id);
     }
 
+    /**
+     * Get list of products greater than min price
+     * @return
+     */
+
     @GetMapping("/greater")
     public List<Product> getProductListGreater(){
         return productService.getProductListGreaterThanMinPrice();
     }
 
+    /**
+     * Get list of products less than max price
+     * @return
+     */
+
     @GetMapping("/less")
     public List<Product> getProductListLess(){
         return productService.getProductListLessThanMaxPrice();
     }
+
+    /**
+     * Get list of products between min and max price
+     * @return
+     */
 
     @GetMapping("/between")
     public List<Product> getProductListBetween(){
