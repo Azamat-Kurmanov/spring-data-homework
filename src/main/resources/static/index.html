@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <script src="index.js"></script>
+    <title>Товары</title>
+</head>
+<body>
+    <div class="container" ng-controller="indexController">
+        <h3>Список товаров</h3>
+        <div>
+            <ul ng-repeat="page in pages" class="list-group">
+                <li class="list-group-item list-group-item-action"><a href="" ng-click="checkPage(page)">{{ page }}</a></li>
+            </ul>
+        </div>
+        <table class="table table-hover">
+            <tr>
+                <td>ID</td>
+                <td>Title</td>
+                <td>Price</td>
+                <td>Exclude</td>
+            </tr>
+            <tbody>
+            <tr ng-repeat="product in ProductListWithPages">
+                <td>{{ product.id }}</td>
+                <td>{{ product.title }}</td>
+                <td>{{ product.price }}</td>
+                <td><button class="btn btn-danger" ng-click="deleteProduct(product.id)">Удалить</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+<style>
+    table {
+        border: 1px solid black;
+    }
+    .list-group{
+        float: left;
+    }
+</style>

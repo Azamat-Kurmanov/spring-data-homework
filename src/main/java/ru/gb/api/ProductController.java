@@ -38,8 +38,9 @@ public class ProductController {
         return null;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteProduct(@PathVariable Long id){
+        System.out.println("id: " + id);
         productRepository.deleteById(id);
     }
 
