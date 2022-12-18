@@ -1,5 +1,5 @@
 angular.module('app', []).controller('indexController', function ($scope, $http) {
-    const contextPath = 'http://localhost:8280/app';
+    const contextPath = 'http://localhost:8280/appapi/v1';
     $scope.prdList = [];
     $scope.pages = [];
     $scope.firstPage = 1;
@@ -18,7 +18,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     //----Удаление товара по id
     $scope.deleteProduct = function(productId){
-        $http.delete(contextPath + '/products/' + productId)
+        $http.delete(contextPath + '/products' + productId)
             .then(function (response) {
                 if (response.status==200){
                     const page = $scope.getMaxMinRows(productId);
