@@ -43,6 +43,10 @@ public class ProductController {
         productRepository.deleteById(id);
     }
 
+    @PutMapping
+    public Product updateProduct(@RequestBody Product product){
+        return productRepository.save(product);
+    }
 
     /**
      * Get list of products greater than min price
