@@ -3,10 +3,16 @@ package ru.gb.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.gb.model.Product;
+import ru.gb.entities.Product;
+import ru.gb.dto.ProductDto;
 import ru.gb.repository.ProductRepository;
+import ru.gb.repository.specifications.ProductSpecifications;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,24 +62,57 @@ public class ProductService {
      * Get list of products greater than min price
      * @return
      */
-    public List<Product> getProductListGreaterThanMinPrice(){
-        return getProductListGreaterThanMin(productRepository.getMinPrice());
+    public List<ProductDto> getProductListGreaterThanMinPrice(){
+        List<ProductDto> productDto = new ArrayList<>();
+        for (Product product: getProductListGreaterThanMin(productRepository.getMinPrice())){
+            productDto.add(new ProductDto(product));
+        }
+        return productDto;
+    }
+
+    public ProductDto getProductById(Long id){
+        return new ProductDto(productRepository.findById(id).orElseThrow());
+    }
+
+    public List<ProductDto> getProductList(){
+        List<ProductDto> productDto = new ArrayList<>();
+        for (Product products: productRepository.findAll()){
+            productDto.add(new ProductDto(products));
+        }
+        return productDto;
+    }
+
+    public ProductDto addProduct(Product product){
+        return new ProductDto(productRepository.save(product));
+    }
+
+    public ProductDto updateProduct(Product product){
+        Product savedObj = productRepository.save(product);
+        return new ProductDto(savedObj);
     }
 
     /**
      * Get list of products less than max price
      * @return
      */
-    public List<Product> getProductListLessThanMaxPrice() {
-        return getProductListLessThanMax(productRepository.getMaxPrice());
+    public List<ProductDto> getProductListLessThanMaxPrice() {
+        List<ProductDto> productDto = new ArrayList<>();
+        for (Product products: getProductListLessThanMax(productRepository.getMaxPrice())){
+            productDto.add(new ProductDto(products));
+        }
+        return productDto;
     }
 
     /**
      * Get list of products between min and max price
      * @return
      */
-    public List<Product> getProductListGreaterThanMinAndLessThanMaxPrice() {
-        return getProductListBetweenMinAndMax(productRepository.getMinPrice(), productRepository.getMaxPrice());
+    public List<ProductDto> getProductListGreaterThanMinAndLessThanMaxPrice() {
+        List<ProductDto> productDto = new ArrayList<>();
+        for (Product products: getProductListBetweenMinAndMax(productRepository.getMinPrice(), productRepository.getMaxPrice())){
+            productDto.add(new ProductDto(products));
+        }
+        return productDto;
     }
 
     private List<Product> getProductListGreaterThanMin(Double price){
@@ -86,5 +125,19 @@ public class ProductService {
 
     private List<Product> getProductListBetweenMinAndMax(Double min, Double max){
         return productRepository.findAllByPriceGreaterThanAndPriceLessThan(min, max);
+    }
+
+    public Page<Product> find(Double minPrice, Double maxPrice, String title, Integer page, Integer sizeOnPage){
+        Specification<Product> spec = Specification.where(null);
+        if (minPrice!=null){
+            spec = spec.and(ProductSpecifications.priceGreaterOrEqualsThan(minPrice));
+        }
+        if (maxPrice!=null){
+            spec = spec.and(ProductSpecifications.priceLessOrEqualsThan(maxPrice));
+        }
+        if (title!=null){
+            spec = spec.and(ProductSpecifications.titleLike(title));
+        }
+        return productRepository.findAll(spec, PageRequest.of(page-1, sizeOnPage));
     }
 }
