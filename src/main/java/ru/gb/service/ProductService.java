@@ -1,5 +1,6 @@
 package ru.gb.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,13 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    private ProductRepository productRepository;
-
-    @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductRepository productRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillProductOnStartApp(){
@@ -70,8 +67,8 @@ public class ProductService {
         return productDto;
     }
 
-    public ProductDto getProductById(Long id){
-        return new ProductDto(productRepository.findById(id).orElseThrow());
+    public Product getProductById(Long id){
+        return productRepository.findById(id).orElseThrow();
     }
 
     public List<ProductDto> getProductList(){
