@@ -1,4 +1,4 @@
-package ru.gb.model;
+package ru.gb.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

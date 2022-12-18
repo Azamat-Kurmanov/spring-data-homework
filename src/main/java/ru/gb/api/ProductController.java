@@ -1,9 +1,10 @@
 package ru.gb.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import ru.gb.model.Product;
-import ru.gb.model.dto.ProductDto;
+import ru.gb.entities.Product;
+import ru.gb.dto.ProductDto;
 import ru.gb.repository.ProductRepository;
 import ru.gb.service.ProductService;
 
@@ -74,5 +75,17 @@ public class ProductController {
     @GetMapping("/between")
     public List<ProductDto> getProductListBetween(){
         return productService.getProductListGreaterThanMinAndLessThanMaxPrice();
+    }
+
+    @GetMapping("/paging")
+    public Page<ProductDto> getAllProducts(
+            @RequestParam(name = "p", defaultValue = "1") Integer page,
+            @RequestParam(name = "minPrice", required = false) Double minPrice,
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(name = "title_part", required = false) String titlePart,
+            @RequestParam(name = "size_on_page", required = true) Integer sizeOnPage
+    ){
+        if (page<1) page = 1;
+        return productService.find(minPrice, maxPrice, titlePart, page, sizeOnPage).map(s -> new ProductDto(s));
     }
 }

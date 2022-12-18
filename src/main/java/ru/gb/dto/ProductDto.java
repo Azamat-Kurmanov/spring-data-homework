@@ -1,15 +1,19 @@
-package ru.gb.model.dto;
+package ru.gb.dto;
+
+import ru.gb.entities.Product;
 
 public class ProductDto {
     private Long id;
     private String title;
     private Double price;
 
-    public ProductDto(Long id, String title, Double price) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
+    public ProductDto(Product product) {
+        this.id = product.getId();
+        this.title = product.getTitle();
+        this.price = product.getPrice();
     }
+
+    public ProductDto(){}
 
     public Long getId() {
         return id;
