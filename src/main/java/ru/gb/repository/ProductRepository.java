@@ -11,15 +11,15 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 //    @Query("SELECT d FROM product d WHERE d.price > (SELECT MIN(c.price) FROM product)");
 
-    public List<Product> findAllByPriceGreaterThan(Double price);
-    public List<Product> findAllByPriceLessThan(Double price);
-    public List<Product> findAllByPriceGreaterThanAndPriceLessThan(Double priceMin, Double priceMax);
+    List<Product> findAllByPriceGreaterThan(Double price);
+    List<Product> findAllByPriceLessThan(Double price);
+    List<Product> findAllByPriceGreaterThanAndPriceLessThan(Double priceMin, Double priceMax);
 
     @Query(value = "SELECT MAX(d.price) FROM Product d")
-    public Double getMaxPrice();
+    Double getMaxPrice();
 
     @Query(value = "SELECT MIN(d.price) FROM Product d")
-    public Double getMinPrice();
+    Double getMinPrice();
 
 
 }

@@ -3,6 +3,7 @@ package ru.gb.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.model.Product;
+import ru.gb.model.dto.ProductDto;
 import ru.gb.repository.ProductRepository;
 import ru.gb.service.ProductService;
 
@@ -21,21 +22,18 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id){
-        return productRepository.findById(id).orElseThrow();
+    public ProductDto getProductById(@PathVariable Long id){
+        return productService.getProductById(id);
     }
 
     @GetMapping
-    public List<Product> getProductList(){
-        return productRepository.findAll();
+    public List<ProductDto> getProductList(){
+        return productService.getProductList();
     }
 
     @PostMapping
-    public Product addProduct(@RequestBody Product product){
-        if (product!=null) {
-            return productRepository.save(product);
-        }
-        return null;
+    public ProductDto addProduct(@RequestBody Product product){
+        return productService.addProduct(product);
     }
 
     @DeleteMapping("/{id}")
@@ -44,8 +42,8 @@ public class ProductController {
     }
 
     @PutMapping
-    public Product updateProduct(@RequestBody Product product){
-        return productRepository.save(product);
+    public ProductDto updateProduct(@RequestBody Product product){
+        return productService.updateProduct(product);
     }
 
     /**
@@ -54,7 +52,7 @@ public class ProductController {
      */
 
     @GetMapping("/greater")
-    public List<Product> getProductListGreater(){
+    public List<ProductDto> getProductListGreater(){
         return productService.getProductListGreaterThanMinPrice();
     }
 
@@ -64,7 +62,7 @@ public class ProductController {
      */
 
     @GetMapping("/less")
-    public List<Product> getProductListLess(){
+    public List<ProductDto> getProductListLess(){
         return productService.getProductListLessThanMaxPrice();
     }
 
@@ -74,7 +72,7 @@ public class ProductController {
      */
 
     @GetMapping("/between")
-    public List<Product> getProductListBetween(){
+    public List<ProductDto> getProductListBetween(){
         return productService.getProductListGreaterThanMinAndLessThanMaxPrice();
     }
 }
