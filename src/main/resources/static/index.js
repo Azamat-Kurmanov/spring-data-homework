@@ -18,7 +18,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     //----Удаление товара по id
     $scope.deleteProduct = function(productId){
-        $http.delete(contextPath + '/products/delete/' + productId)
+        $http.delete(contextPath + '/products/' + productId)
             .then(function (response) {
                 if (response.status==200){
                     const page = $scope.getMaxMinRows(productId);

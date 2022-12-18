@@ -38,11 +38,11 @@ public class ProductController {
         return null;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id){
-        System.out.println("id: " + id);
         productRepository.deleteById(id);
     }
+
 
     /**
      * Get list of products greater than min price
