@@ -1,10 +1,11 @@
 angular.module('app', []).controller('indexController', function ($scope, $http) {
-    const contextPath = 'http://localhost:8280/appapi/v1';
+    const contextPath = 'http://localhost:8280/app/api/v1';
     $scope.prdList = [];
     $scope.pages = [];
     $scope.firstPage = 1;
     $scope.pagesLimit = 10;
     $scope.numberOfPages = 0;
+    $scope.listOfCart = [];
 
     //---Загрузка списка
     $scope.loadProducts = function (firstPage) {
@@ -18,11 +19,28 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     //----Удаление товара по id
     $scope.deleteProduct = function(productId){
-        $http.delete(contextPath + '/products' + productId)
+        $http.delete(contextPath + '/products/' + productId)
             .then(function (response) {
                 if (response.status==200){
                     const page = $scope.getMaxMinRows(productId);
                     $scope.loadProducts(page);
+                }
+            });
+    }
+
+    $scope.sendToCart = function (productId){
+        $http.post(contextPath + '/products/to_cart/' + productId +'/1')
+            .then(function(response) {
+                if (response.status==200) {
+                    for (const cart of response.data){
+                        const cartObj = {
+                            'id': cart.product.id,
+                            'title': cart.product.title,
+                            'price': cart.product.price,
+                            'number': cart.number
+                        }
+                        $scope.listOfCart.push(cartObj);
+                    }
                 }
             });
     }

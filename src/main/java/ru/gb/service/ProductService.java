@@ -1,15 +1,16 @@
 package ru.gb.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.gb.entities.Product;
+import ru.gb.dto.ProductCartDto;
 import ru.gb.dto.ProductDto;
+import ru.gb.entities.Product;
+import ru.gb.exceptions.ResourceNotFoundException;
 import ru.gb.repository.ProductRepository;
 import ru.gb.repository.specifications.ProductSpecifications;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private List<ProductCartDto> productCartDtos;
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillProductOnStartApp(){
@@ -68,7 +70,7 @@ public class ProductService {
     }
 
     public Product getProductById(Long id){
-        return productRepository.findById(id).orElseThrow();
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Невозможно обновить продукт, в базе не найден продукт с id: "+id));
     }
 
     public List<ProductDto> getProductList(){
@@ -136,5 +138,14 @@ public class ProductService {
             spec = spec.and(ProductSpecifications.titleLike(title));
         }
         return productRepository.findAll(spec, PageRequest.of(page-1, sizeOnPage));
+    }
+
+    public List<ProductCartDto> addProductToCart(Long id, Integer number) {
+        if (id!=null){
+            productCartDtos = new ArrayList<>();
+            Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Невозможно обновить продукт, в базе не найден продукт с id: " + id));
+            productCartDtos.add(new ProductCartDto(product, number));
+        }
+        return productCartDtos;
     }
 }

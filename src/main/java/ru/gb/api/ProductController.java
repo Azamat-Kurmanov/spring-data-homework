@@ -1,14 +1,15 @@
 package ru.gb.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.converters.ProductConverter;
-import ru.gb.entities.Product;
+import ru.gb.dto.ProductCartDto;
 import ru.gb.dto.ProductDto;
+import ru.gb.entities.Product;
 import ru.gb.repository.ProductRepository;
 import ru.gb.service.ProductService;
+import ru.gb.validators.ProductValidator;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final ProductConverter productConverter;
+    private final ProductValidator productValidator;
 
     @GetMapping("/{id}")
     public ProductDto getProductById(@PathVariable Long id){
@@ -33,6 +35,8 @@ public class ProductController {
 
     @PostMapping
     public ProductDto addProduct(@RequestBody Product product){
+        ProductDto productDto = productConverter.entityToDto(product);
+        productValidator.validate(productDto);
         return productService.addProduct(product);
     }
 
@@ -43,6 +47,8 @@ public class ProductController {
 
     @PutMapping
     public ProductDto updateProduct(@RequestBody Product product){
+        ProductDto productDto = productConverter.entityToDto(product);
+        productValidator.validate(productDto);
         return productService.updateProduct(product);
     }
 
@@ -86,5 +92,10 @@ public class ProductController {
     ){
         if (page<1) page = 1;
         return productService.find(minPrice, maxPrice, titlePart, page, sizeOnPage).map(p -> new ProductDto(p.getId(), p.getTitle(), p.getPrice()));
+    }
+
+    @PostMapping("/to_cart/{id}/{number}")
+    public List<ProductCartDto> addProductToCart(@PathVariable Long id, @PathVariable Integer number){
+        return productService.addProductToCart(id, number);
     }
 }
